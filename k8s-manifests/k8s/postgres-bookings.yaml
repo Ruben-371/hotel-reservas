@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-bookings
+  namespace: hotel-reservas
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-bookings
+  template:
+    metadata:
+      labels:
+        app: postgres-bookings
+    spec:
+      containers:
+      - name: postgres-bookings
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_DB
+          value: bookings_db
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          value: password
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-bookings
+  namespace: hotel-reservas
+spec:
+  selector:
+    app: postgres-bookings
+  ports:
+  - port: 5432
